@@ -23,7 +23,7 @@
         <thead>
         <tr>
             <th>UserName</th>
-            <th>Eamil</th>
+            <th>Email</th>
             <th>DateOfBirth</th>
             <th>Country</th>
             <th>Gender</th>
@@ -40,7 +40,13 @@
         </tbody>
     </table>
 </div>
+<div style="text-center">
+@if(user(0).isUserRole){
+<h1 class="text-center"></h1>
+<a href="">Manage</a>
+}
 <button class="btn-danger text-center"><a href="/logout">Logout</a></button>
+</div>
 </body>
 </html>
 }

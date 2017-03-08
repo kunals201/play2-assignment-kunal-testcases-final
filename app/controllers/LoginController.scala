@@ -1,16 +1,18 @@
 package controllers
-import services.{Login, SignUp, bufferService}
+import services._
 import javax.inject.Inject
-
+import models._
+import play.api.Configuration
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.{Action, Controller}
 import play.http._
+import play.api.cache._
 
 import scala.collection.mutable.ListBuffer
 
 
-class LoginController @Inject() extends Controller {
+class LoginController @Inject()(cache: CacheApi, cacheService:CacheTrait, configuration: Configuration) extends Controller {
 
   val logIn:Form[Login]= Form (
     mapping(
@@ -22,13 +24,17 @@ class LoginController @Inject() extends Controller {
 def index = Action { implicit request=>
   Ok(views.html.Login())
 }
-  def userProfile(username:String)= Action { implicit  request =>
+  def userProfile(username:String)= Action { implicit request =>
+    val users = cache.get[services.SignUp](username)
+        val result = users.map(user=>if(user.username == username) Some(user) else None)
 
-    val users = bufferService.getAllUsers
-    val result = users.map(user=>if(user.username == username) Some(user) else None)
-    val res:List[SignUp]=result.flatten.toList
+    val res: List[SignUp] = result.flatten.toList
     Ok(views.html.profile(res,request))
   }
+//    val users = bufferService.getAllUsers
+//    val result = users.map(user=>if(user.username == username) Some(user) else None)
+//    val res:List[SignUp]=result.flatten.toList
+//    Ok(views.html.profile(res,request))
 
 
   def login = Action { implicit  request =>
@@ -37,11 +43,15 @@ def index = Action { implicit request=>
         BadRequest(views.html.Login())
       },
       loginData => {
-        val user = bufferService.getUser(loginData.username)
-        Console.println(user)
-        if(user.password == loginData.pswd && user.username == loginData.username)
+        val user =  cacheService.getCache(loginData.username)
 
-          Redirect(routes.LoginController.userProfile(loginData.username)).withSession("currentUser"->loginData.username).flashing("message"->"Login Successful :)")
+        //val user =  cache.get[services.SignUp](loginData.username)
+        //        val user = bufferService.getUser(loginData.username)
+        Console.println(user)
+        val users=user.get
+//        if(users.password == loginData.password && users.username == loginData.username)
+          if(users.password == Encrypter.hash(loginData.password) && users.username == loginData.username)
+            Redirect(routes.LoginController.userProfile(loginData.username)).withSession("currentUser"->loginData.username).flashing("message"->"Login Successful :)")
         else
           Redirect(routes.LoginController.index()).flashing("msg"->"Incorrect username or password")
       })
