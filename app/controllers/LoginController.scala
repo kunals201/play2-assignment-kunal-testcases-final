@@ -25,11 +25,12 @@ def index = Action { implicit request=>
   Ok(views.html.Login())
 }
   def userProfile(username:String)= Action { implicit request =>
-    val users = cache.get[services.SignUp](username)
-        val result = users.map(user=>if(user.username == username) Some(user) else None)
+    val users = cacheService.getCache(username)
+        //val result = users.map(user=>if(user.username == username) Some(user) else None)
 
-    val res: List[SignUp] = result.flatten.toList
-    Ok(views.html.profile(res,request))
+    //val res: List[SignUp] = result.flatten.toList
+   // Ok(views.html.profile(res,request))
+  Ok(views.html.profile(users.toList,request))
   }
 //    val users = bufferService.getAllUsers
 //    val result = users.map(user=>if(user.username == username) Some(user) else None)
@@ -48,11 +49,17 @@ def index = Action { implicit request=>
         //val user =  cache.get[services.SignUp](loginData.username)
         //        val user = bufferService.getUser(loginData.username)
         Console.println(user)
-        val users=user.get
+        val users=user.getOrElse(SignUp("","","","","","","",false,false))
 //        if(users.password == loginData.password && users.username == loginData.username)
           if(users.password == Encrypter.hash(loginData.password) && users.username == loginData.username)
-            Redirect(routes.LoginController.userProfile(loginData.username)).withSession("currentUser"->loginData.username).flashing("message"->"Login Successful :)")
-        else
+            if(users.isAllow==true) {
+              Redirect(routes.LoginController.index()).flashing("msg" -> "Permisssion Denied")
+            }
+              else
+              {
+                Redirect(routes.LoginController.userProfile(loginData.username)).withSession("currentUser" -> loginData.username).flashing("message" -> "Login Successful :)")
+              }
+                else
           Redirect(routes.LoginController.index()).flashing("msg"->"Incorrect username or password")
       })
   }

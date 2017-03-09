@@ -1,27 +1,18 @@
 @(implicit flash: Flash)
-<!--
-<div class="container">
-    <div class="jumbotron">
-        <h1>Play Appliction</h1>
-        <p>Play Framework makes it easy to build web applications with Java & Scala. Play is based on a lightweight, stateless, web-friendly architecture. Built on Akka, Play provides predictable and minimal resource consumption (CPU, memory, threads) for highly-scalable applications.</p>
-    </div>
-
-
-    <button><a href="/login">Login</a></button>
-    <button><a href="/signup">SignUp</a></button>
-
-</div>
--->
-<div style="background-color:#f4511e; color:#fff" class="text-center">
+<div style="background-color:#05325C; opacity:0.7; color:#fff; " class="text-center">
     <h1>Welcome</h1>
+    <h3>To The </h3>
     <p> Play app</p>
+    <p>World!!</p>
     <form class="form-inline">
         <div class="input-group">
 
             <div class="input-group-btn">
                 <button type="button" class="btn"><a href="/signup">Sign Up</a></button>
                 <button type="button" class="btn btn-success"><a href="/login">Sign In</a></button>
+              <!--<button type="button" class="btn"><a href="@routes.LoginController.login">Profile</a></button>-->
             </div>
+
         </div>
     </form>
 </div>

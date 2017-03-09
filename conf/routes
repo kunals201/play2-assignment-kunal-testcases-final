@@ -18,6 +18,12 @@ POST   /adduser                       controllers.SignupController.signingUp
 
 GET  /signup                          controllers.SignupController.index
 
+GET  /manage                          controllers.ManageController.ManagementArea
+
+GET  /suspend                         controllers.ManageController.suspendUser(username:String)
+
+GET  /resume                         controllers.ManageController.resumeUser(username:String)
+
 GET     /logout                          controllers.Logout.logout
 
 GET  /login                          controllers.LoginController.index

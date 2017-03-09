@@ -1,0 +1,25 @@
+@import services._
+@(users:List[SignUp])(implicit flash: Flash)
+
+@main("Play App") {
+
+@welcome(flash)
+<h1>This is Management Page</h1>
+<h2>Admin Users</h2>
+<table class="table">
+    <thead>
+    <tr>
+        <th>UserName</th>
+    </tr>
+    </thead>
+        @for(user<-users){
+<tbody>
+    <tr>
+        <td>@user.username</td>
+        <td><button class="btn"><a href="@routes.ManageController.suspendUser(user.username)">Suspend</a></button></td>
+        <td><button class="btn"><a href="@routes.ManageController.resumeUser(user.username)">Resume</a></button></td>
+    </tr>
+</tbody>
+        }
+    </table>
+}

@@ -1,5 +1,5 @@
 package controllers
-import services.{Login, bufferService}
+import services.{bufferService}
 import javax.inject.Inject
 
 import play.api.Configuration
@@ -47,6 +47,7 @@ class SignupController @Inject() (cache: CacheApi, cacheService: CacheTrait , co
         else {
           val encrypterUser=signinData.copy(password = Encrypter.hash(signinData.password))
           println(encrypterUser)
+          bufferService.addUser(signinData.username)
           cacheService.setCache(signinData.username, encrypterUser)
           Console.println("Its Working")
           Redirect(routes.LoginController.userProfile(signinData.username)).withSession("currentUser" -> signinData.username).flashing("message" -> "Login Successful :)")
