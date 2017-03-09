@@ -36,8 +36,8 @@ class SignupController @Inject() (cache: CacheApi, cacheService: CacheTrait , co
       formWithErrors => {
         Redirect(routes.LoginController.index()).flashing("message"->"Sorry something Went Wrong,Try Again Later")
       },
-      signinData => {
-        val user =  cacheService.getCache(signinData.username)
+      signupData => {
+        val user =  cacheService.getCache(signupData.username)
 
        // val user =  cache.get[services.SignUp](signinData.username)
         //val users=user.get
@@ -45,12 +45,14 @@ class SignupController @Inject() (cache: CacheApi, cacheService: CacheTrait , co
           Redirect(routes.SignupController.index()).flashing("msg"->"Username already exist")
         }
         else {
-          val encrypterUser=signinData.copy(password = Encrypter.hash(signinData.password))
-          println(encrypterUser)
-          bufferService.addUser(signinData.username)
-          cacheService.setCache(signinData.username, encrypterUser)
-          Console.println("Its Working")
-          Redirect(routes.LoginController.userProfile(signinData.username)).withSession("currentUser" -> signinData.username).flashing("message" -> "Login Successful :)")
+          if (signupData.password != signupData.re_password) {
+            Redirect(routes.SignupController.index()).flashing("msg"->"passwsord not match")
+          } else {
+            val encrypterUser = signupData.copy(password = Encrypter.hash(signupData.password))
+            bufferService.addUser(signupData.username)
+            cacheService.setCache(signupData.username, encrypterUser)
+            Redirect(routes.LoginController.userProfile(signupData.username)).withSession("currentUser" -> signupData.username).flashing("message" -> "Login Successful :)")
+          }
         }
         })
   }

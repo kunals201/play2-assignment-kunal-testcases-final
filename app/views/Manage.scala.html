@@ -18,6 +18,13 @@
         <td>@user.username</td>
         <td><button class="btn"><a href="@routes.ManageController.suspendUser(user.username)">Suspend</a></button></td>
         <td><button class="btn"><a href="@routes.ManageController.resumeUser(user.username)">Resume</a></button></td>
+    <td>
+        @if(user.isAllow == false) {
+        <span style="color:#3CB371;">Resumed</span>
+        } else {
+        <span>Suspend</span>
+        }
+    </td>
     </tr>
 </tbody>
         }

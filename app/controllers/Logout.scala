@@ -9,7 +9,7 @@ import play.api.mvc.{Action, Controller}
 class Logout @Inject() extends Controller{
   def logout = Action{ implicit request=>
 
-    Redirect(routes.LoginController.index()).withNewSession
+    Redirect(routes.LoginController.index()).withNewSession.flashing("msg" -> "Please Login First")
   }
 
 }
